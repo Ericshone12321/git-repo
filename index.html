@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric's web</title>
+</head>
+<body>
+    <div id = "container">
+        <h1>空氣品質狀況</h1>
+        <p>目前空氣品質:<span id = "air-quality">N/A</span></p>
+        <button id = "update-button">更新數值</button>
+    </div>
+
+    <script>
+        //進行openData獲取
+        const airQualityElement = document.getElementById("air-quality");
+        const updateButton = document.getElementById("update-button");
+
+        //函數用於獲取API數據並更新HTML頁面
+        function updateAirQuality() {
+            airQualityElement.textContent = "更新中";
+            //在這裡執行API請求，取得最新的空氣品質數值
+            fetch("https://data.moenv.gov.tw/api/v2/aqx_p_242?api_key=8d25ab7b-849d-4d02-a6b3-305a6459edbf")
+            .then(response => response.json())
+            .then(data => {
+                const airQualityValue = data.records[0].concentration;
+                console.log(data);
+                airQualityElement.textContent = airQualityValue;
+            })
+            .catch(error => {
+                console.log(error);
+                console.error("無法獲取API數據:" + error);
+            })
+        }
+        //3.建立監聽器使網站可透過按鈕更新數值
+        updateButton.addEventListener("click", updateAirQuality);
+        updateAirQuality();
+    </script>
+</body>
+</html>
